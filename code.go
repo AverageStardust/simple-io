@@ -17,6 +17,7 @@ type rawWriter struct {
 }
 
 const lineNumberFormat = "%3d  "
+const lineNumberSize = 5
 
 // Creates a small code editor with syntax highlighting and line numbers.
 // Does not work with screen scrolling, thus is best for small snippits of code.
@@ -39,7 +40,9 @@ func codeEditor(code *[]rune, lineLimit, tabSize int) {
 	defer stop()
 
 	lineNumber := 1
-	fmt.Printf("\033[H\033[J"+lineNumberFormat, lineNumber)
+	MoveToHome()
+	EraseToScreenEnd()
+	fmt.Printf(lineNumberFormat, lineNumber)
 
 editLoop:
 	for {
@@ -65,7 +68,8 @@ editLoop:
 			if lineNumber < lineLimit {
 				*code = append(*code, '\n')
 				lineNumber++
-				fmt.Printf("\033[1E"+lineNumberFormat, lineNumber)
+				MoveDownToBeginning(1)
+				fmt.Printf(lineNumberFormat, lineNumber)
 			}
 
 		case key == KEY_ESCAPE:
@@ -73,7 +77,7 @@ editLoop:
 		}
 	}
 
-	print("\033[1E")
+	MoveDownToBeginning(1)
 }
 
 // Controls what happens when the backspace/delete keys are pressed in the editor.
@@ -87,7 +91,9 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		*code = (*code)[:len(*code)-1]
 		*lineNumber--
 		cols := countCols(*code)
-		fmt.Printf("\033[1F\033[%dC\033[J", cols+5)
+		MoveUpToBeginning(1)
+		MoveRight(lineNumberSize + cols)
+		EraseToScreenEnd()
 
 	case ' ':
 		cols := countCols(*code)
@@ -102,7 +108,8 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 			if lineAllSpaces {
 				// remove rest of a tab
 				*code = (*code)[:len(*code)-tabSize]
-				fmt.Printf("\033[%dD\033[K", tabSize)
+				MoveLeft(tabSize)
+				EraseToLineEnd()
 				break
 			}
 		}
@@ -110,7 +117,8 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		fallthrough
 	default:
 		*code = (*code)[:len(*code)-1]
-		print("\033[1D\033[K")
+		MoveLeft(1)
+		EraseToLineEnd()
 	}
 }
 
@@ -133,13 +141,14 @@ func codeStyler(code *[]rune, quit chan struct{}, lexerName, styleName string) {
 				if oldCode != trimmedCode {
 					trailingSpaces := len(currentCode) - len(trimmedCode)
 
-					print("\033[H\033[J")
+					MoveToHome()
+					EraseToScreenEnd()
 
 					iterator, _ := lexer.Tokenise(nil, trimmedCode)
 					formatters.TTY16m.Format(newRawWriter(), style, iterator)
 
 					if trailingSpaces > 0 {
-						fmt.Printf("\033[%dC", trailingSpaces)
+						MoveRight(trailingSpaces)
 					}
 
 					oldCode = trimmedCode
@@ -198,7 +207,8 @@ func (writer rawWriter) Write(bytes []byte) (n int, err error) {
 		if byte == '\n' {
 			print(string(bytes[lastWrite:i]))
 			*writer.lineNumber++
-			fmt.Printf("\033[1E"+lineNumberFormat, *writer.lineNumber)
+			MoveDownToBeginning(1)
+			fmt.Printf(lineNumberFormat, *writer.lineNumber)
 
 			lastWrite = i + 1
 		}

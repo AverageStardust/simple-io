@@ -56,7 +56,8 @@ func Confirm(question string) (confirmed bool) {
 
 	confirmed = len(answer) > 0 && (answer[0] == 'Y' || answer[0] == 'y')
 
-	print("\033[1F\033[2K")
+	MoveUpToBeginning(1)
+	EraseLine()
 	if confirmed {
 		fmt.Printf("%s: Yes\n", question)
 	} else {

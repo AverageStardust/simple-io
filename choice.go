@@ -88,8 +88,8 @@ func (choice *Choice) Ask() *Choice {
 		return choice
 	}
 
-	print("\033[?25l")       // hide cursor
-	defer print("\033[?25h") // show cursor afterward
+	HideCursor()       // hide cursor
+	defer ShowCursor() // show cursor afterward
 
 	index := 0
 	if choice.result != NO_RESULT {
@@ -140,13 +140,14 @@ renderLoop:
 // Displays a choice in the terminal.
 func (choice *Choice) render(index int, redraw bool, done bool) {
 	if redraw {
-		print("\033[2K\033[0G")
+		EraseLine()
+		MoveToColumn(0)
 	}
 
 	if !done {
 		fmt.Printf("Select: <- %-*s ->", choice.width, choice.options[index])
 	} else {
 		fmt.Printf("Select: %s\n", choice.options[index])
-		print("\033[0G")
+		MoveToColumn(0)
 	}
 }

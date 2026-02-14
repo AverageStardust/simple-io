@@ -42,7 +42,8 @@ func RawTerminalKeys() (keys iter.Seq[uint32]) {
 				// disable raw terminal mode since we are about to immediately terminate
 				term.Restore(int(os.Stdin.Fd()), oldState)
 
-				print("\nForce Quit\n")
+				ShowCursor()
+				print("Force Quit\n")
 				os.Exit(0)
 			}
 
