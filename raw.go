@@ -19,10 +19,11 @@ const (
 	KEY_DELETE      = 2117294875
 )
 
-// Enters raw terminal mode and gets raw key inputs as an iterator
-// Iterator must be finished once it is started, or else the terminal will remain in raw mode
-// Will immediately terminate the program with code 0 if the user enters ctrl+c
-func getRawTerminalKeys() (keys iter.Seq[uint32]) {
+// Enters raw terminal mode and then gets key press as an iterator.
+// Whenever pulling from the iterator the program will pause until the next key press.
+// The returned iterator must be stopped to exit raw mode.
+// Will immediately terminate the program with code 0 if the user enters ctrl+c.
+func RawTerminalKeys() (keys iter.Seq[uint32]) {
 	// enable raw terminal mode
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {

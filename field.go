@@ -13,7 +13,7 @@ import (
 
 var reader = bufio.NewReader(os.Stdin)
 
-// Propmts the user to enter a string
+// Propmts the user to enter a string.
 func String(question string) (answer string, err error) {
 	fmt.Printf("%s: ", question)
 
@@ -28,7 +28,7 @@ func String(question string) (answer string, err error) {
 	return answer, nil
 }
 
-// Propmts the user to enter an integer
+// Propmts the user to enter an integer.
 func Integer(question string) (answer int, err error) {
 	fmt.Printf("%s: ", question)
 
@@ -46,7 +46,7 @@ func Integer(question string) (answer int, err error) {
 	return
 }
 
-// Propmts the user to enter a boolean
+// Propmts the user to enter a boolean.
 func Confirm(question string) (confirmed bool) {
 	fmt.Printf("%s (y/n): ", question)
 
@@ -67,8 +67,9 @@ func Confirm(question string) (confirmed bool) {
 	return
 }
 
-// Propmts the user to enter a password
-// Does not display in terminal, and is hashed before leaving the function
+// Propmts the user to enter a password.
+// The password is not display password in terminal.
+// The password is hashed before being returned.
 func Password() (passHash string, err error) {
 	print("Password: ")
 

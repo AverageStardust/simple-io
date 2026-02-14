@@ -14,7 +14,7 @@ type Choice struct {
 
 const NO_RESULT = -1
 
-// Creates a new choice with options
+// Creates a new choice with options.
 func NewChoice(options ...string) *Choice {
 	width := 0
 	for _, option := range options {
@@ -28,7 +28,7 @@ func NewChoice(options ...string) *Choice {
 	}
 }
 
-// Appends a single new option to a choice
+// Appends a single new option to a choice.
 func (choice *Choice) Add(option string) *Choice {
 	choice.options = append(choice.options, option)
 	choice.width = max(choice.width, len(option))
@@ -36,7 +36,7 @@ func (choice *Choice) Add(option string) *Choice {
 	return choice
 }
 
-// Appends a slice of new options to a choice
+// Appends a slice of new options to a choice.
 func (choice *Choice) AddSlice(options []string) *Choice {
 	choice.options = slices.Concat(choice.options, options)
 
@@ -47,8 +47,8 @@ func (choice *Choice) AddSlice(options []string) *Choice {
 	return choice
 }
 
-// Get the string of the selected option, asking the user if needed
-// // Returns an empty string if failed to select anything
+// Get the string of the selected option, asking the user if needed.
+// Returns an empty string if failed to select anything.
 func (choice *Choice) ResultString() string {
 	index := choice.ResultIndex()
 
@@ -59,8 +59,8 @@ func (choice *Choice) ResultString() string {
 	return choice.options[index]
 }
 
-// Gets the index of the selected option, asking the user if needed
-// Returns NO_RESULT if failed to select anything
+// Gets the index of the selected option, asking the user if needed.
+// Returns NO_RESULT if failed to select anything.
 func (choice *Choice) ResultIndex() int {
 	if choice.result == NO_RESULT {
 		choice.Ask()
@@ -69,14 +69,14 @@ func (choice *Choice) ResultIndex() int {
 	return choice.result
 }
 
-// Forgets any option already selected
+// Forgets any option already selected.
 func (choice *Choice) Forget() *Choice {
 	choice.result = NO_RESULT
 	return choice
 }
 
-// Ask the user, replacing any older selection
-// May fail to select anything, leaving the result as NO_RESULT
+// Ask the user, replacing any older selection.
+// May fail to select anything, leaving the result as NO_RESULT.
 func (choice *Choice) Ask() *Choice {
 	choice.Forget()
 
@@ -98,7 +98,7 @@ func (choice *Choice) Ask() *Choice {
 
 	choice.render(index, false, false)
 
-	next, stop := iter.Pull(getRawTerminalKeys())
+	next, stop := iter.Pull(RawTerminalKeys())
 	defer stop()
 renderLoop:
 	for {
@@ -137,7 +137,7 @@ renderLoop:
 	return choice
 }
 
-// Displays a choice in the terminal
+// Displays a choice in the terminal.
 func (choice *Choice) render(index int, redraw bool, done bool) {
 	if redraw {
 		print("\033[2K\033[0G")

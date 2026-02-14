@@ -18,9 +18,8 @@ type rawWriter struct {
 
 const lineNumberFormat = "%3d  "
 
-// Creates a small code entry with syntax highlighting and line numbers
-// Currently works poorly if the screen must scroll to see all of it
-// Best for small snippits of code
+// Creates a small code editor with syntax highlighting and line numbers.
+// Does not work with screen scrolling, thus is best for small snippits of code.
 func Code(lexerName, styleName string, lineLimit, tabSize int) string {
 	code := new([]rune)
 
@@ -34,9 +33,9 @@ func Code(lexerName, styleName string, lineLimit, tabSize int) string {
 	return string(*code)
 }
 
-// Controls the input and output of the code editor
+// Controls the input and output of the code editor.
 func codeEditor(code *[]rune, lineLimit, tabSize int) {
-	next, stop := iter.Pull(getRawTerminalKeys())
+	next, stop := iter.Pull(RawTerminalKeys())
 	defer stop()
 
 	lineNumber := 1
@@ -77,7 +76,7 @@ editLoop:
 	print("\033[1E")
 }
 
-// Controls what happens when the backspace/delete keys are pressed in the editor
+// Controls what happens when the backspace/delete keys are pressed in the editor.
 func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 	if len(*code) == 0 {
 		return
@@ -115,7 +114,7 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 	}
 }
 
-// Replaces the code with a syntax highlighted version on a regular basis
+// Replaces the code with a syntax highlighted version on a regular basis.
 func codeStyler(code *[]rune, quit chan struct{}, lexerName, styleName string) {
 	lexer := lexers.Get(lexerName)
 	style := styles.Get(styleName)
@@ -152,7 +151,7 @@ func codeStyler(code *[]rune, quit chan struct{}, lexerName, styleName string) {
 	}
 }
 
-// Count the number of columns in the last line of code
+// Count the number of columns in the last line of code.
 func countCols(code []rune) int {
 	cols := 0
 
@@ -167,7 +166,7 @@ func countCols(code []rune) int {
 	return cols
 }
 
-// Count the number of rows in the code
+// Count the number of rows in the code.
 func countRows(code []rune) int {
 	rows := 1
 
@@ -180,13 +179,13 @@ func countRows(code []rune) int {
 	return rows
 }
 
-// Creates a writer for writing in raw terminal mode
+// Creates a writer for writing in raw terminal mode.
 func newRawWriter() rawWriter {
 	return rawWriter{new(int)}
 }
 
-// Writes to the screen in raw terminal mode
-// Handles newlines with ANSI codes and inserts line numbers
+// Writes to the screen in raw terminal mode.
+// Handles newlines with ANSI codes and then inserts line numbers.
 func (writer rawWriter) Write(bytes []byte) (n int, err error) {
 	lastWrite := 0
 
