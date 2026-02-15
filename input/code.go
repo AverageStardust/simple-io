@@ -38,7 +38,7 @@ func Code(lexerName, styleName string, lineLimit, tabSize int) string {
 
 // Controls the input and output of the code editor.
 func codeEditor(code *[]rune, lineLimit, tabSize int) {
-	next, stop := iter.Pull(RawTerminalKeys())
+	next, stop := iter.Pull(RawKeys())
 	defer stop()
 
 	lineNumber := 1

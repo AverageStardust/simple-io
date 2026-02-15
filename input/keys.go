@@ -1,15 +1,15 @@
 package input
 
-const (
-	KEY_UNKNOWN     = 0
-	KEY_END_OF_TEXT = 3
-	KEY_TAB         = 9
-	KEY_ENTER       = 13
-	KEY_ESCAPE      = 27
-)
+type Key uint64
 
 const (
-	KEY_SPACE = iota + 32
+	KEY_UNKNOWN     Key = 0
+	KEY_END_OF_TEXT Key = 3
+	KEY_TAB         Key = 9
+	KEY_ENTER       Key = 13
+	KEY_ESCAPE      Key = 27
+
+	KEY_SPACE Key = iota + 27
 	KEY_EXCLAMATION
 	KEY_QUOTATION_MARK
 	KEY_HASH
@@ -25,10 +25,8 @@ const (
 	KEY_HYPHEN
 	KEY_PERIOD
 	KEY_SLASH
-)
 
-const (
-	KEY_ZERO = 48 + iota
+	KEY_ZERO
 	KEY_ONE
 	KEY_TWO
 	KEY_THREE
@@ -38,20 +36,16 @@ const (
 	KEY_SEVEN
 	KEY_EIGHT
 	KEY_NINE
-)
 
-const (
-	KEY_COLON = 58 + iota
+	KEY_COLON
 	KEY_SEMICOLON
 	KEY_LESS_THAN
 	KEY_EQUAL
 	KEY_GREATER_THAN
 	KEY_QUESTION_MARK
 	KEY_AT_SIGN
-)
 
-const (
-	KEY_SHIFT_A = 65 + iota
+	KEY_SHIFT_A
 	KEY_SHIFT_B
 	KEY_SHIFT_C
 	KEY_SHIFT_D
@@ -77,19 +71,15 @@ const (
 	KEY_SHIFT_X
 	KEY_SHIFT_Y
 	KEY_SHIFT_Z
-)
 
-const (
-	KEY_LEFT_SQUARE_BRACKET = iota + 91
+	KEY_LEFT_SQUARE_BRACKET
 	KEY_BACK_SLASH
 	KEY_RIGHT_SQUARE_BRACKET
 	KEY_EXPONENT
 	KEY_UNDERSCORE
 	KEY_GRAVE
-)
 
-const (
-	KEY_A = 97 + iota
+	KEY_A
 	KEY_B
 	KEY_C
 	KEY_D
@@ -115,30 +105,26 @@ const (
 	KEY_X
 	KEY_Y
 	KEY_Z
-)
 
-const (
-	KEY_LEFT_CURLY_BRACE = 123 + iota
+	KEY_LEFT_CURLY_BRACE
 	KEY_PIPE
 	KEY_RIGHT_CURLY_BRASE
 	KEY_TILDE
 	KEY_BACKSPACE
+
+	KEY_UP        Key = 4283163
+	KEY_DOWN      Key = 4348699
+	KEY_RIGHT     Key = 4414235
+	KEY_LEFT      Key = 4479771
+	KEY_END       Key = 4610843
+	KEY_HOME      Key = 4741915
+	KEY_INSERT    Key = 2117229339
+	KEY_DELETE    Key = 2117294875
+	KEY_PAGE_UP   Key = 2117425947
+	KEY_PAGE_DOWN Key = 2117491483
 )
 
-const (
-	KEY_UP        = 4283163
-	KEY_DOWN      = 4348699
-	KEY_RIGHT     = 4414235
-	KEY_LEFT      = 4479771
-	KEY_END       = 4610843
-	KEY_HOME      = 4741915
-	KEY_INSERT    = 2117229339
-	KEY_DELETE    = 2117294875
-	KEY_PAGE_UP   = 2117425947
-	KEY_PAGE_DOWN = 2117491483
-)
-
-func knownKey(key uint32) bool {
+func knownKey(key Key) bool {
 	if key >= 32 && key <= 127 { // ascii text
 		return true
 	}

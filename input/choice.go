@@ -100,7 +100,7 @@ func (choice *Choice) Ask() *Choice {
 
 	choice.render(index, false, false)
 
-	next, stop := iter.Pull(RawTerminalKeys())
+	next, stop := iter.Pull(RawKeys())
 	defer stop()
 renderLoop:
 	for {
