@@ -1,2 +1,2 @@
-# simple-input
-Simple terminal inputs for Go
+# simple-io
+Simple terminal input and output for Go

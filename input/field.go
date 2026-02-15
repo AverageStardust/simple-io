@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/AverageStardust/simple-input/output"
+	"github.com/AverageStardust/simple-io/output"
 	"golang.org/x/term"
 )
 

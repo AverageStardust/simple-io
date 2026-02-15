@@ -5,7 +5,7 @@ import (
 	"iter"
 	"os"
 
-	"github.com/AverageStardust/simple-input/output"
+	"github.com/AverageStardust/simple-io/output"
 	"golang.org/x/term"
 )
 

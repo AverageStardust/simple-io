@@ -5,7 +5,7 @@ import (
 	"iter"
 	"slices"
 
-	"github.com/AverageStardust/simple-input/output"
+	"github.com/AverageStardust/simple-io/output"
 )
 
 type Choice struct {

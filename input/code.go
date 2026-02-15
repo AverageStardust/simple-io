@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AverageStardust/simple-input/output"
+	"github.com/AverageStardust/simple-io/output"
 	"github.com/alecthomas/chroma/v2/formatters"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"

@@ -1,4 +1,4 @@
-module github.com/AverageStardust/simple-input
+module github.com/AverageStardust/simple-io
 
 go 1.25.6
 
