@@ -1,4 +1,4 @@
-package main
+package input
 
 import (
 	"bufio"
@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/AverageStardust/simple-input/output"
 	"golang.org/x/term"
 )
 
@@ -56,8 +57,8 @@ func Confirm(question string) (confirmed bool) {
 
 	confirmed = len(answer) > 0 && (answer[0] == 'Y' || answer[0] == 'y')
 
-	MoveUpToBeginning(1)
-	EraseLine()
+	output.MoveUpToBeginning(1)
+	output.EraseLine()
 	if confirmed {
 		fmt.Printf("%s: Yes\n", question)
 	} else {

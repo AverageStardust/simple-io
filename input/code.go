@@ -1,4 +1,4 @@
-package main
+package input
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AverageStardust/simple-input/output"
 	"github.com/alecthomas/chroma/v2/formatters"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
@@ -41,8 +42,8 @@ func codeEditor(code *[]rune, lineLimit, tabSize int) {
 	defer stop()
 
 	lineNumber := 1
-	MoveToHome()
-	EraseToScreenEnd()
+	output.MoveToHome()
+	output.EraseToScreenEnd()
 	fmt.Printf(lineNumberFormat, lineNumber)
 
 editLoop:
@@ -69,7 +70,7 @@ editLoop:
 			if lineNumber < lineLimit {
 				*code = append(*code, '\n')
 				lineNumber++
-				MoveDownToBeginning(1)
+				output.MoveDownToBeginning(1)
 				fmt.Printf(lineNumberFormat, lineNumber)
 			}
 
@@ -78,7 +79,7 @@ editLoop:
 		}
 	}
 
-	MoveDownToBeginning(1)
+	output.MoveDownToBeginning(1)
 }
 
 // Controls what happens when the backspace/delete keys are pressed in the editor.
@@ -92,9 +93,9 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		*code = (*code)[:len(*code)-1]
 		*lineNumber--
 		cols := countCols(*code)
-		MoveUpToBeginning(1)
-		MoveRight(lineNumberSize + cols)
-		EraseToScreenEnd()
+		output.MoveUpToBeginning(1)
+		output.MoveRight(lineNumberSize + cols)
+		output.EraseToScreenEnd()
 
 	case ' ':
 		cols := countCols(*code)
@@ -109,8 +110,8 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 			if lineAllSpaces {
 				// remove rest of a tab
 				*code = (*code)[:len(*code)-tabSize]
-				MoveLeft(tabSize)
-				EraseToLineEnd()
+				output.MoveLeft(tabSize)
+				output.EraseToLineEnd()
 				break
 			}
 		}
@@ -118,8 +119,8 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		fallthrough
 	default:
 		*code = (*code)[:len(*code)-1]
-		MoveLeft(1)
-		EraseToLineEnd()
+		output.MoveLeft(1)
+		output.EraseToLineEnd()
 	}
 }
 
@@ -140,8 +141,8 @@ func codeStyler(code *[]rune, quit chan struct{}, lexerName, styleName string) {
 				currentCode := string(currentCodeSlice)
 
 				if oldCode != currentCode {
-					MoveToHome()
-					EraseToScreenEnd()
+					output.MoveToHome()
+					output.EraseToScreenEnd()
 
 					iterator, _ := lexer.Tokenise(nil, currentCode)
 					writer := newRawWriter(countRows(currentCodeSlice))
@@ -208,7 +209,7 @@ func (writer *rawWriter) Write(bytes []byte) (n int, err error) {
 
 				// print line number
 				writer.lineNumber++
-				MoveDownToBeginning(1)
+				output.MoveDownToBeginning(1)
 				fmt.Printf(lineNumberFormat, writer.lineNumber)
 
 				bytes = bytes[i+1:]

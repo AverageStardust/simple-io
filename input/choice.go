@@ -1,9 +1,11 @@
-package main
+package input
 
 import (
 	"fmt"
 	"iter"
 	"slices"
+
+	"github.com/AverageStardust/simple-input/output"
 )
 
 type Choice struct {
@@ -88,8 +90,8 @@ func (choice *Choice) Ask() *Choice {
 		return choice
 	}
 
-	HideCursor()       // hide cursor
-	defer ShowCursor() // show cursor afterward
+	output.HideCursor()       // hide cursor
+	defer output.ShowCursor() // show cursor afterward
 
 	index := 0
 	if choice.result != NO_RESULT {
@@ -140,14 +142,14 @@ renderLoop:
 // Displays a choice in the terminal.
 func (choice *Choice) render(index int, redraw bool, done bool) {
 	if redraw {
-		EraseLine()
-		MoveToColumn(0)
+		output.EraseLine()
+		output.MoveToColumn(0)
 	}
 
 	if !done {
 		fmt.Printf("Select: <- %-*s ->", choice.width, choice.options[index])
 	} else {
 		fmt.Printf("Select: %s\n", choice.options[index])
-		MoveToColumn(0)
+		output.MoveToColumn(0)
 	}
 }
