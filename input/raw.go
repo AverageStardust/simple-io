@@ -31,8 +31,10 @@ func RawKeys() (keys iter.Seq[Key]) {
 				return
 			}
 
-			if !yield(key) {
-				return
+			if key != KEY_UNKNOWN {
+				if !yield(key) {
+					return
+				}
 			}
 		}
 	}
@@ -62,9 +64,9 @@ func rawKeyAssuingMode() (Key, error) {
 
 	var key = KEY_UNKNOWN
 	if n <= 8 {
-		key = Key(binary.LittleEndian.Uint64(buffer[:]))
+		key = Key(binary.LittleEndian.Uint64(buffer[:8]))
 
-		if !knownKey(key) {
+		if !key.known() {
 			key = KEY_UNKNOWN
 		}
 	}

@@ -1,5 +1,10 @@
 package input
 
+import (
+	"fmt"
+	"strings"
+)
+
 type Key uint64
 
 const (
@@ -8,8 +13,10 @@ const (
 	KEY_TAB         Key = 9
 	KEY_ENTER       Key = 13
 	KEY_ESCAPE      Key = 27
+)
 
-	KEY_SPACE Key = iota + 27
+const (
+	KEY_SPACE Key = iota + 32
 	KEY_EXCLAMATION
 	KEY_QUOTATION_MARK
 	KEY_HASH
@@ -111,7 +118,38 @@ const (
 	KEY_RIGHT_CURLY_BRASE
 	KEY_TILDE
 	KEY_BACKSPACE
+)
 
+const (
+	KEY_ALT_A Key = iota*256 + 24859
+	KEY_ALT_B
+	KEY_ALT_C
+	KEY_ALT_D
+	KEY_ALT_E
+	KEY_ALT_F
+	KEY_ALT_G
+	KEY_ALT_H
+	KEY_ALT_I
+	KEY_ALT_J
+	KEY_ALT_K
+	KEY_ALT_L
+	KEY_ALT_M
+	KEY_ALT_N
+	KEY_ALT_O
+	KEY_ALT_P
+	KEY_ALT_Q
+	KEY_ALT_R
+	KEY_ALT_S
+	KEY_ALT_T
+	KEY_ALT_U
+	KEY_ALT_V
+	KEY_ALT_W
+	KEY_ALT_X
+	KEY_ALT_Y
+	KEY_ALT_Z
+)
+
+const (
 	KEY_UP        Key = 4283163
 	KEY_DOWN      Key = 4348699
 	KEY_RIGHT     Key = 4414235
@@ -124,8 +162,61 @@ const (
 	KEY_PAGE_DOWN Key = 2117491483
 )
 
-func knownKey(key Key) bool {
-	if key >= 32 && key <= 127 { // ascii text
+func (key Key) Name() string {
+	if key >= KEY_EXCLAMATION && key <= KEY_TILDE { // ascii text
+
+		if key >= KEY_SHIFT_A && key <= KEY_SHIFT_Z {
+			letter := rune(key)
+			return fmt.Sprintf("Shift + %c", letter)
+		}
+
+		return strings.ToUpper(string(rune(key)))
+	}
+
+	switch key {
+	case KEY_UNKNOWN:
+		return "Unknown"
+	case KEY_END_OF_TEXT:
+		return "End of Text"
+	case KEY_TAB:
+		return "Tab"
+	case KEY_ENTER:
+		return "Enter"
+	case KEY_ESCAPE:
+		return "Escape"
+	case KEY_UP:
+		return "Arrow Up"
+	case KEY_DOWN:
+		return "Arrow Down"
+	case KEY_RIGHT:
+		return "Arrow Left"
+	case KEY_LEFT:
+		return "Arrow Right"
+	case KEY_END:
+		return "End"
+	case KEY_HOME:
+		return "Home"
+	case KEY_INSERT:
+		return "Insert"
+	case KEY_DELETE:
+		return "Delete"
+	case KEY_PAGE_UP:
+		return "Page Up"
+	case KEY_PAGE_DOWN:
+		return "Page Down"
+	}
+
+	if key >= KEY_ALT_A && key <= KEY_ALT_Z && (key-KEY_ALT_A)%256 == 0 {
+		withoutAlt := (key-KEY_ALT_A)/256 + KEY_A
+		letter := strings.ToUpper(string(rune(withoutAlt)))
+		return fmt.Sprintf("Alt + %s", letter)
+	}
+
+	return "Unnamed"
+}
+
+func (key Key) known() bool {
+	if key >= KEY_SPACE && key <= KEY_BACKSPACE { // ascii text
 		return true
 	}
 
@@ -135,6 +226,11 @@ func knownKey(key Key) bool {
 	case KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_LEFT: // arrow keys
 		return true
 	case KEY_END, KEY_HOME, KEY_INSERT, KEY_DELETE, KEY_PAGE_UP, KEY_PAGE_DOWN: // control keys
+		return true
+	}
+
+	// alt letters
+	if key >= KEY_ALT_A && key <= KEY_ALT_Z && (key-KEY_ALT_A)%256 == 0 {
 		return true
 	}
 
