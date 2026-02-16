@@ -208,6 +208,55 @@ func (style *Style) NoStrikethrough() *Style {
 	return style
 }
 
+// Resets all settings
+func (style *Style) Reset() *Style {
+	style.fgColor = defaultColor
+	style.bgColor = defaultColor
+	style.weight = regularWeight
+	style.italic = false
+	style.underline = false
+	style.strikethrough = false
+
+	return style
+}
+
+func (style *Style) Equals(other *Style) bool {
+
+	if style.fgColor == isTrueColor && other.fgColor == isTrueColor {
+		if style.fgTrueColor != other.fgTrueColor {
+			return false
+		}
+	} else if style.fgColor != other.fgColor {
+		return false
+	}
+
+	if style.bgColor == isTrueColor && other.bgColor == isTrueColor {
+		if style.bgTrueColor != other.bgTrueColor {
+			return false
+		}
+	} else if style.bgColor != other.bgColor {
+		return false
+	}
+
+	if style.weight != other.weight {
+		return false
+	}
+
+	if style.italic != other.italic {
+		return false
+	}
+
+	if style.underline != other.underline {
+		return false
+	}
+
+	if style.strikethrough != other.strikethrough {
+		return false
+	}
+
+	return true
+}
+
 func (style *Style) Print(args ...any) *Style {
 	style.printRaw(fmt.Sprint(args...))
 	return style
