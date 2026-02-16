@@ -40,7 +40,7 @@ func RawKeys() (keys iter.Seq[Key]) {
 	}
 }
 
-func RawKey(Key) Key {
+func RawKey() Key {
 	RawMode()
 	defer CookedMode()
 
@@ -99,5 +99,6 @@ func RawMode() (err error) {
 func CookedMode() {
 	if cookedTerminalState != nil {
 		term.Restore(int(os.Stdin.Fd()), cookedTerminalState)
+		cookedTerminalState = nil
 	}
 }

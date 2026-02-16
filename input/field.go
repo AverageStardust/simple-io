@@ -87,3 +87,16 @@ func Password() (passHash string, err error) {
 	hashBytes := sha256.Sum256(passwordBytes)
 	return base64.RawStdEncoding.EncodeToString(hashBytes[:]), nil
 }
+
+func KeyBind() (key Key) {
+	print("Key Bind: ")
+
+	key = KEY_UNKNOWN
+	for key == KEY_UNKNOWN {
+		key = RawKey()
+	}
+
+	println(key.Name())
+
+	return key
+}
