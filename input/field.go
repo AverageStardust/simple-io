@@ -14,7 +14,7 @@ import (
 
 var reader = bufio.NewReader(os.Stdin)
 
-// Propmts the user to enter a string.
+// Prompts the user to enter a string.
 func String(question string) (answer string, err error) {
 	fmt.Printf("%s: ", question)
 
@@ -26,10 +26,11 @@ func String(question string) (answer string, err error) {
 	}
 
 	print("\n")
+	callOnEntered()
 	return answer, nil
 }
 
-// Propmts the user to enter an integer.
+// Prompts the user to enter an integer.
 func Integer(question string) (answer int, err error) {
 	fmt.Printf("%s: ", question)
 
@@ -44,10 +45,11 @@ func Integer(question string) (answer int, err error) {
 	}
 
 	print("\n")
+	callOnEntered()
 	return
 }
 
-// Propmts the user to enter a boolean.
+// Prompts the user to enter a boolean.
 func Confirm(question string) (confirmed bool) {
 	fmt.Printf("%s (y/n): ", question)
 
@@ -66,10 +68,11 @@ func Confirm(question string) (confirmed bool) {
 	}
 
 	print("\n")
+	callOnEntered()
 	return
 }
 
-// Propmts the user to enter a password.
+// Prompts the user to enter a password.
 // The password is not display password in terminal.
 // The password is hashed before being returned.
 func Password() (passHash string, err error) {
@@ -97,6 +100,6 @@ func KeyBind() (key Key) {
 	}
 
 	println(key.Name())
-
+	callOnEntered()
 	return key
 }

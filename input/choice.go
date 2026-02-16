@@ -1,7 +1,6 @@
 package input
 
 import (
-	"fmt"
 	"iter"
 	"slices"
 
@@ -9,9 +8,10 @@ import (
 )
 
 type Choice struct {
-	options []string
-	width   int
-	result  int
+	options  []string
+	width    int
+	result   int
+	vertical bool
 }
 
 const NO_RESULT = -1
@@ -24,10 +24,23 @@ func NewChoice(options ...string) *Choice {
 	}
 
 	return &Choice{
-		options: options,
-		width:   width,
-		result:  NO_RESULT,
+		options:  options,
+		width:    width,
+		result:   NO_RESULT,
+		vertical: false,
 	}
+}
+
+// Switches to vertical display mode
+func (choice *Choice) Vertical() *Choice {
+	choice.vertical = true
+	return choice
+}
+
+// Switches to horizontal display mode
+func (choice *Choice) Horizontal() *Choice {
+	choice.vertical = false
+	return choice
 }
 
 // Appends a single new option to a choice.
@@ -100,6 +113,15 @@ func (choice *Choice) Ask() *Choice {
 
 	choice.render(index, false, false)
 
+	var nextKey, prevKey Key
+	if choice.vertical {
+		nextKey = KEY_DOWN
+		prevKey = KEY_UP
+	} else {
+		nextKey = KEY_RIGHT
+		prevKey = KEY_LEFT
+	}
+
 	next, stop := iter.Pull(RawKeys())
 	defer stop()
 renderLoop:
@@ -110,20 +132,23 @@ renderLoop:
 		}
 
 		switch key {
-		case KEY_LEFT:
+		case prevKey:
 			index -= 1
 			if index < 0 {
 				index = len(choice.options) - 1
 			}
+			callOnSelected()
 
-		case KEY_RIGHT:
+		case nextKey:
 			index += 1
 			if index >= len(choice.options) {
 				index = 0
 			}
+			callOnSelected()
 
 		case KEY_ENTER:
 			choice.result = index
+			callOnEntered()
 			break renderLoop
 
 		case KEY_ESCAPE:
@@ -139,17 +164,46 @@ renderLoop:
 	return choice
 }
 
+var choiceDefaultStyle *output.Style = new(output.Style)
+var choiceVerticalSelectedStyle *output.Style = new(output.Style).Bold()
+
 // Displays a choice in the terminal.
 func (choice *Choice) render(index int, redraw bool, done bool) {
-	if redraw {
-		output.EraseLine()
-		output.MoveToColumn(0)
-	}
+	if choice.vertical {
+		if redraw {
+			output.MoveUpToBeginning(len(choice.options))
+			output.EraseToScreenEnd()
+		}
 
-	if !done {
-		fmt.Printf("Select: <- %-*s ->", choice.width, choice.options[index])
+		if !done {
+			choiceDefaultStyle.Print("Select:")
+			for optionIndex, option := range choice.options {
+				if redraw {
+					output.MoveDownToBeginning(1)
+				} else {
+					println()
+				}
+				if optionIndex == index {
+					choiceVerticalSelectedStyle.Printf("> %-*s <", choice.width, option)
+				} else {
+					choiceDefaultStyle.Printf("  %-*s  ", choice.width, option)
+				}
+			}
+		} else {
+			choiceDefaultStyle.Printf("Select: %s\n", choice.options[index])
+			output.MoveToColumn(0)
+		}
 	} else {
-		fmt.Printf("Select: %s\n", choice.options[index])
-		output.MoveToColumn(0)
+		if redraw {
+			output.EraseLine()
+			output.MoveToColumn(0)
+		}
+
+		if !done {
+			choiceDefaultStyle.Printf("Select: <- %-*s ->", choice.width, choice.options[index])
+		} else {
+			choiceDefaultStyle.Printf("Select: %s\n", choice.options[index])
+			output.MoveToColumn(0)
+		}
 	}
 }
