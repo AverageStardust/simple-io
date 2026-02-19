@@ -42,9 +42,12 @@ func codeEditor(code *[]rune, lineLimit, tabSize int) {
 	defer stop()
 
 	lineNumber := 1
+
+	output.LockScreen()
 	output.MoveToHome()
 	output.EraseToScreenEnd()
 	fmt.Printf(lineNumberFormat, lineNumber)
+	output.UnlockScreen()
 
 editLoop:
 	for {
@@ -57,11 +60,15 @@ editLoop:
 		case key >= 32 && key <= 126: // ascii range
 			rune := rune(key)
 			*code = append(*code, rune)
+			output.LockScreen()
 			print(string(rune))
+			output.UnlockScreen()
 
 		case key == KEY_TAB:
 			*code = append(*code, slices.Repeat([]rune{' '}, tabSize)...)
+			output.LockScreen()
 			print(strings.Repeat(" ", tabSize))
+			output.UnlockScreen()
 
 		case key == KEY_BACKSPACE || key == KEY_DELETE:
 			deleteCodeRune(code, &lineNumber, tabSize)
@@ -70,8 +77,10 @@ editLoop:
 			if lineNumber < lineLimit {
 				*code = append(*code, '\n')
 				lineNumber++
+				output.LockScreen()
 				output.MoveDownToBeginning(1)
 				fmt.Printf(lineNumberFormat, lineNumber)
+				output.UnlockScreen()
 			}
 
 		case key == KEY_ESCAPE:
@@ -79,7 +88,9 @@ editLoop:
 		}
 	}
 
-	output.MoveDownToBeginning(1)
+	output.LockScreen()
+	print("\n")
+	output.UnlockScreen()
 }
 
 // Controls what happens when the backspace/delete keys are pressed in the editor.
@@ -93,9 +104,12 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		*code = (*code)[:len(*code)-1]
 		*lineNumber--
 		cols := countCols(*code)
+
+		output.LockScreen()
 		output.MoveUpToBeginning(1)
 		output.MoveRight(lineNumberSize + cols)
 		output.EraseToScreenEnd()
+		output.UnlockScreen()
 
 	case ' ':
 		cols := countCols(*code)
@@ -110,8 +124,10 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 			if lineAllSpaces {
 				// remove rest of a tab
 				*code = (*code)[:len(*code)-tabSize]
+				output.LockScreen()
 				output.MoveLeft(tabSize)
 				output.EraseToLineEnd()
+				output.UnlockScreen()
 				break
 			}
 		}
@@ -119,8 +135,10 @@ func deleteCodeRune(code *[]rune, lineNumber *int, tabSize int) {
 		fallthrough
 	default:
 		*code = (*code)[:len(*code)-1]
+		output.LockScreen()
 		output.MoveLeft(1)
 		output.EraseToLineEnd()
+		output.UnlockScreen()
 	}
 }
 
@@ -141,12 +159,20 @@ func codeStyler(code *[]rune, quit chan struct{}, lexerName, styleName string) {
 				currentCode := string(currentCodeSlice)
 
 				if oldCode != currentCode {
+
+					iterator, _ := lexer.Tokenise(nil, currentCode)
+
+					output.LockScreen()
+					output.SavePosition()
+
 					output.MoveToHome()
 					output.EraseToScreenEnd()
 
-					iterator, _ := lexer.Tokenise(nil, currentCode)
 					writer := newRawWriter(countRows(currentCodeSlice))
 					formatters.TTY16m.Format(writer, style, iterator)
+
+					output.RestorePosition()
+					output.UnlockScreen()
 
 					oldCode = currentCode
 				}
