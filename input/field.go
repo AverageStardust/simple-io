@@ -59,6 +59,20 @@ func Integer(question string) (answer int, err error) {
 	return
 }
 
+// Shows the user a message, and waits for them to press enter.
+func Acknowledge(message string) (confirmed bool) {
+	output.LockScreen()
+	fmt.Printf("%s (press enter)", message)
+	output.UnlockScreen()
+
+	// scan a string to make sure we consume all input
+	var line string
+	fmt.Scanln(&line)
+
+	callOnEntered()
+	return
+}
+
 // Prompts the user to enter a boolean.
 func Confirm(question string) (confirmed bool) {
 	output.LockScreen()
