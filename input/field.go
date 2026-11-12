@@ -60,7 +60,7 @@ func Integer(question string) (answer int, err error) {
 }
 
 // Shows the user a message, and waits for them to press enter.
-func Acknowledge(message string) (confirmed bool) {
+func Acknowledge(message string) {
 	output.LockScreen()
 	fmt.Printf("%s (press enter)", message)
 	output.UnlockScreen()
