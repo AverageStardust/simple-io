@@ -70,7 +70,6 @@ func Acknowledge(message string) {
 	fmt.Scanln(&line)
 
 	callOnEntered()
-	return
 }
 
 // Prompts the user to enter a boolean.
